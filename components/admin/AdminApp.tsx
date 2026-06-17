@@ -56,7 +56,6 @@ const TITLES: Record<ViewId, string> = {
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const LEAD_STATUSES = ["new", "contacted", "qualified", "won", "lost"] as const;
-const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const fmt = (n: number) => n.toLocaleString("en-US");
 const ADMIN_TOKEN_KEY = "moniket.cmsToken";
 const ADMIN_EMAIL_KEY = "moniket.cmsEmail";
@@ -355,10 +354,6 @@ export default function AdminApp() {
   );
 
   // ── helpers ──
-  function pill(status: string) {
-    return <span className={`pill ${status}`}>{cap(status)}</span>;
-  }
-
   function leadsTable(rows: Lead[]) {
     return (
       <table>
