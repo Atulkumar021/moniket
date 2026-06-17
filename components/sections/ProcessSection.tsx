@@ -33,8 +33,8 @@ export default function ProcessSection({ processSection, processSteps }: Props) 
               <div className="proc-iconwrap">
                 <svg className="proc-ring" width="96" height="96" viewBox="0 0 96 96" fill="none">
                   <circle cx="48" cy="48" r="45" stroke="#E3ECF5" strokeWidth="2" />
-                  <circle cx="48" cy="48" r="45" stroke="#5CC1F5" strokeWidth="3" strokeLinecap="round" strokeDasharray="205 283" transform="rotate(-90 48 48)" />
-                  <circle cx="48" cy="3" r="3.2" fill="#2E90FA" />
+                  <circle cx="48" cy="48" r="45" stroke="#F2A65E" strokeWidth="3" strokeLinecap="round" strokeDasharray="205 283" transform="rotate(-90 48 48)" />
+                  <circle cx="48" cy="3" r="3.2" fill="#E0792B" />
                 </svg>
                 <div className="proc-icon">
                   <Icon path={s.icon} size={28} stroke={1.8} />

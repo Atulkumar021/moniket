@@ -20,7 +20,7 @@ export default function ArticleList({ items }: { items: ArticleCardData[] }) {
       </div>
       <div className="grid g3">
         {filtered.length ? (
-          filtered.map((a) => <ArticleCard key={`${a.type}-${a.id}`} a={a} />)
+          filtered.map((a) => <ArticleCard key={`${a.type}-${a.slug ?? a.id}`} a={a} />)
         ) : (
           <p style={{ gridColumn: "1/-1", textAlign: "center", color: "var(--muted)" }}>Nothing here yet.</p>
         )}

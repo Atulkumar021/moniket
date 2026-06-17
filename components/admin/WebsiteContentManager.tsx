@@ -13,10 +13,11 @@ type Section = {
   data: Record<string, unknown>;
 };
 
-const TYPES = ["hero", "services", "knowledgeHub", "toolbox", "about", "process", "statistics", "footer"];
+const TYPES = ["hero", "marquee", "services", "knowledgeHub", "toolbox", "about", "process", "statistics", "footer"];
 const API = process.env.NEXT_PUBLIC_CMS_API_URL || "/api";
 const TYPE_LABELS: Record<string, string> = {
   hero: "Hero",
+  marquee: "Marquee",
   services: "Services",
   knowledgeHub: "Knowledge Hub",
   toolbox: "Open-Source Toolbox",
@@ -26,6 +27,16 @@ const TYPE_LABELS: Record<string, string> = {
   footer: "Footer",
 };
 const sectionLabel = (type: string) => TYPE_LABELS[type] || type;
+
+// Toggling a section's visibility also shows/hides its matching header nav link.
+// Section types without an entry here only affect the homepage, not the navbar.
+const SECTION_NAV_HREF: Record<string, string> = {
+  services: "/services",
+  knowledgeHub: "/tracks",
+  toolbox: "/toolbox",
+  about: "/about",
+  contact: "/contact",
+};
 
 export default function WebsiteContentManager({ token, notify }: { token: string; notify: (message: string) => void }) {
   const [sections, setSections] = useState<Section[]>([]);
@@ -101,11 +112,31 @@ export default function WebsiteContentManager({ token, notify }: { token: string
     notify("Section deleted");
   }
 
+  // Keep the matching header nav link in sync with the section's visibility.
+  async function syncNavLink(type: string, enabled: boolean) {
+    const href = SECTION_NAV_HREF[type];
+    if (!href) return;
+    try {
+      const menu = await request("/nav/main");
+      const items = (menu.items || []) as { href: string; enabled?: boolean }[];
+      let changed = false;
+      const updated = items.map((item) => {
+        if (item.href !== href) return item;
+        changed = true;
+        return { ...item, enabled };
+      });
+      if (changed) await request("/nav/main", { method: "PUT", body: JSON.stringify({ items: updated }) });
+    } catch {
+      // Nav sync is best-effort; the section toggle itself already succeeded.
+    }
+  }
+
   async function quickToggle(section: Section) {
     const next = !section.enabled;
     setSections(sections.map((s) => s._id === section._id ? { ...s, enabled: next } : s));
     try {
       await request(`/sections/${section._id}`, { method: "PATCH", body: JSON.stringify({ enabled: next }) });
+      await syncNavLink(section.type, next);
       notify(next ? `"${section.name}" is now visible on the site` : `"${section.name}" is now hidden from the site`);
     } catch {
       await load();
@@ -129,12 +160,8 @@ export default function WebsiteContentManager({ token, notify }: { token: string
           <div>
             <p className="cms-eyebrow">Homepage builder</p>
             <h3>Website content</h3>
-            <p>Edit the MongoDB sections that power the homepage. Published sections update the live site.</p>
+            <p>Toggle sections on or off to show or hide them on the live homepage, reorder them, or edit their content.</p>
           </div>
-          <button className="adm-create" onClick={() => open()}>
-            <Icon path='<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>' size={16} stroke={2.4} />
-            Create section
-          </button>
         </div>
 
         {error && <div className="cms-error">{error}</div>}
@@ -143,7 +170,7 @@ export default function WebsiteContentManager({ token, notify }: { token: string
           {sections.length === 0 && (
             <div className="cms-empty">
               <strong>No homepage sections yet</strong>
-              <span>Create a section or run the CMS seed script to add the default homepage.</span>
+              <span>Run the CMS seed script to add the default homepage sections.</span>
             </div>
           )}
 

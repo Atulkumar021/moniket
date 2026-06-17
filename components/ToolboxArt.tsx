@@ -42,7 +42,7 @@ export default function ToolboxArt() {
         </linearGradient>
         <linearGradient id="tbx-blue" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#8FD0FB" />
-          <stop offset="1" stopColor="#2E90FA" />
+          <stop offset="1" stopColor="#E0792B" />
         </linearGradient>
         <linearGradient id="tbx-indigo" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#A5B4FF" />
@@ -50,7 +50,7 @@ export default function ToolboxArt() {
         </linearGradient>
         <linearGradient id="tbx-sky" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#CDEBFF" />
-          <stop offset="1" stopColor="#5CC1F5" />
+          <stop offset="1" stopColor="#F2A65E" />
         </linearGradient>
         <linearGradient id="tbx-deep" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#5BA8F5" />
@@ -61,7 +61,7 @@ export default function ToolboxArt() {
           <stop offset="1" stopColor="#9FD4FF" stopOpacity="0" />
         </radialGradient>
         <filter id="tbx-sh" x="-40%" y="-40%" width="180%" height="180%">
-          <feDropShadow dx="0" dy="6" stdDeviation="6" floodColor="#2E90FA" floodOpacity="0.28" />
+          <feDropShadow dx="0" dy="6" stdDeviation="6" floodColor="#E0792B" floodOpacity="0.28" />
         </filter>
       </defs>
 
@@ -75,7 +75,7 @@ export default function ToolboxArt() {
         {/* right face */}
         <polygon points="185,234 265,192 265,244 185,286" fill="url(#tbx-box)" opacity="0.92" />
         {/* top rim */}
-        <polygon points="185,150 265,192 185,234 105,192" fill="#EAF4FF" opacity="0.95" />
+        <polygon points="185,150 265,192 185,234 105,192" fill="#FDEEDD" opacity="0.95" />
         {/* opening */}
         <polygon points="185,162 248,196 185,228 122,196" fill="#9FC4EE" opacity="0.65" />
       </g>

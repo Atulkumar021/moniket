@@ -4,9 +4,10 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import WebsiteContentManager from "@/components/admin/WebsiteContentManager";
+import MarqueeManager from "@/components/admin/MarqueeManager";
 import BlogCmsManager from "@/components/admin/BlogCmsManager";
-import MediaCmsManager from "@/components/admin/MediaCmsManager";
-import type { Article, Lead, Settings, Sub } from "@/lib/types";
+import TutorialCmsManager from "@/components/admin/TutorialCmsManager";
+import type { Lead, Settings, Sub } from "@/lib/types";
 
 type Stats = {
   newLeads: number;
@@ -21,7 +22,7 @@ type Stats = {
 };
 
 type ViewId =
-  | "dashboard" | "analytics" | "website" | "navigation" | "blogs" | "tutorials" | "media"
+  | "dashboard" | "analytics" | "website" | "marquee" | "navigation" | "blogs" | "tutorials"
   | "leads" | "newsletter" | "settings";
 
 type NavItem = { label: string; href: string; order: number; enabled: boolean };
@@ -33,10 +34,10 @@ const MENU: [string, [ViewId, string, string][]][] = [
   ]],
   ["CONTENT", [
     ["website", "Website Content", '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/>'],
+    ["marquee", "Marquee", '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>'],
     ["navigation", "Navigation", '<path d="M3 12h18M3 6h18M3 18h18"/>'],
     ["blogs", "Blog Posts", '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'],
     ["tutorials", "Tutorials", '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>'],
-    ["media", "Media Library", '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>'],
   ]],
   ["CRM", [
     ["leads", "Hire Me", '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'],
@@ -48,8 +49,8 @@ const MENU: [string, [ViewId, string, string][]][] = [
 ];
 
 const TITLES: Record<ViewId, string> = {
-  dashboard: "Dashboard", analytics: "Analytics", website: "Website Content",
-  navigation: "Navigation", blogs: "Blog Posts", tutorials: "Tutorials", media: "Media Library",
+  dashboard: "Dashboard", analytics: "Analytics", website: "Website Content", marquee: "Marquee",
+  navigation: "Navigation", blogs: "Blog Posts", tutorials: "Tutorials",
   leads: "Hire Me", newsletter: "Newsletter", settings: "Settings",
 };
 
@@ -59,10 +60,6 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const fmt = (n: number) => n.toLocaleString("en-US");
 const ADMIN_TOKEN_KEY = "moniket.cmsToken";
 const ADMIN_EMAIL_KEY = "moniket.cmsEmail";
-
-const PIPE_COLORS: Record<string, string> = {
-  new: "#2E90FA", contacted: "#F59E0B", qualified: "#8B5CF6", won: "#22C55E", lost: "#EF4444",
-};
 
 function KpiCard({ label, value, icon }: { label: string; value: number; icon: string }) {
   const [v, setV] = useState(0);
@@ -98,7 +95,6 @@ export default function AdminApp() {
   const [view, setView] = useState<ViewId>("dashboard");
 
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [tutorials, setTutorials] = useState<Article[]>([]);
   const [subs, setSubs] = useState<Sub[]>([]);
   const [settings, setSettings] = useState<Settings>({ siteTitle: "", tagline: "", email: "" });
   const [stats, setStats] = useState<Stats | null>(null);
@@ -109,12 +105,20 @@ export default function AdminApp() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [paletteQ, setPaletteQ] = useState("");
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  const goTo = useCallback((id: ViewId) => { setView(id); setMobileNavOpen(false); }, []);
 
   useEffect(() => {
     const savedToken = window.localStorage.getItem(ADMIN_TOKEN_KEY);
     const savedEmail = window.localStorage.getItem(ADMIN_EMAIL_KEY);
     if (savedEmail) setEmail(savedEmail);
     if (savedToken) { setCmsToken(savedToken); setLoggedIn(true); }
+    // Match the admin theme to the site-wide theme so the public-site dark
+    // mode (html.dark) and the admin's own theme never disagree.
+    const storedTheme = window.localStorage.getItem("theme");
+    const isDark = storedTheme ? storedTheme === "dark" : document.documentElement.classList.contains("dark");
+    setTheme(isDark ? "dark" : "light");
     setAuthChecked(true);
   }, []);
 
@@ -134,14 +138,13 @@ export default function AdminApp() {
   }, []);
 
   const loadAll = useCallback(async () => {
-    const [l, t, s, st, sub] = await Promise.all([
+    const [l, s, st, sub] = await Promise.all([
       fetch("/api/leads").then((r) => r.json()),
-      fetch("/api/tutorials").then((r) => r.json()),
       fetch("/api/settings").then((r) => r.json()),
       fetch("/api/stats").then((r) => r.json()),
       fetch("/api/subscribers").then((r) => r.json()),
     ]);
-    setLeads(l); setTutorials(t); setSettings(s); setStats(st); setSubs(sub);
+    setLeads(l); setSettings(s); setStats(st); setSubs(sub);
   }, []);
 
   useEffect(() => { if (loggedIn) loadAll(); }, [loggedIn, loadAll]);
@@ -218,22 +221,26 @@ export default function AdminApp() {
   if (!loggedIn) return (
     <div className="admin-bg">
       <div className="login">
-        <div className="login-card">
+        <div className="login-aurora" aria-hidden>
+          <span className="aurora la1" /><span className="aurora la2" />
+        </div>
+        <form className="login-card glass" onSubmit={(e) => { e.preventDefault(); doLogin(); }}>
           <div className="logo">M</div>
-          <h2>Admin Panel</h2>
-          <p className="sub">Moniket Technologies</p>
+          <p className="login-eyebrow">Moniket Technologies</p>
+          <h2>Welcome back</h2>
+          <p className="sub">Sign in to the admin dashboard</p>
           <label>Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@moniket.tech" />
           <label>Password</label>
-          <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} />
-          <button className="btn btn-primary" style={{ width: "100%", justifyContent: "center", marginTop: 16 }} onClick={doLogin}>
+          <input type="password" value={pass} onChange={(e) => setPass(e.target.value)} placeholder="••••••••" />
+          <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center", marginTop: 18 }}>
             Sign in
           </button>
           <div className="demo-note">Sign in with your MongoDB CMS administrator account.</div>
           <div style={{ textAlign: "center", marginTop: 12 }}>
             <Link href="/" style={{ fontSize: ".82rem", color: "var(--muted)" }}>← Back to website</Link>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
@@ -244,8 +251,9 @@ export default function AdminApp() {
   return (
     <div className={`admin-bg adm ${theme === "dark" ? "dark" : ""}`}>
       <div className="adm-bg" aria-hidden><span className="aurora da1" /><span className="aurora da2" /></div>
+      <div className={`adm-navback ${mobileNavOpen ? "show" : ""}`} onClick={() => setMobileNavOpen(false)} aria-hidden />
       <div className="shell">
-        <aside className="sidebar">
+        <aside className={`sidebar ${mobileNavOpen ? "open" : ""}`}>
           <Link className="brand" href="/">
             <span className="logo">M</span>
             <span>Moniket<small>Admin</small></span>
@@ -255,7 +263,7 @@ export default function AdminApp() {
               <div key={group}>
                 <div className="nav-group">{group}</div>
                 {items.map(([id, label, path]) => (
-                  <button key={id} className={`nav-item ${view === id ? "active" : ""}`} onClick={() => setView(id)}>
+                  <button key={id} className={`nav-item ${view === id ? "active" : ""}`} onClick={() => goTo(id)}>
                     <Icon path={path} size={18} />
                     {label}
                     {id === "leads" && stats ? <span className="badge">{stats.newLeads}</span> : null}
@@ -268,6 +276,9 @@ export default function AdminApp() {
 
         <div className="main">
           <div className="topbar">
+            <button className="adm-burger" aria-label="Open menu" onClick={() => setMobileNavOpen(true)}>
+              <Icon path='<line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>' size={20} stroke={2} />
+            </button>
             <h1>{TITLES[view]}</h1>
             <div className="adm-search" onClick={() => setPaletteOpen(true)}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -277,15 +288,16 @@ export default function AdminApp() {
               <span className="kbd">⌘K</span>
             </div>
             <div className="adm-actions">
-              <button className="adm-ibtn" title="Toggle theme" onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}>
+              <button className="adm-ibtn" title="Toggle theme" onClick={() => setTheme((t) => {
+                const next = t === "dark" ? "light" : "dark";
+                window.localStorage.setItem("theme", next);
+                document.documentElement.classList.toggle("dark", next === "dark");
+                return next;
+              })}>
                 {theme === "dark"
                   ? <Icon path='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>' size={18} stroke={1.8} />
                   : <Icon path='<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>' size={18} stroke={1.8} />
                 }
-              </button>
-              <button className="adm-create" onClick={() => setPaletteOpen(true)}>
-                <Icon path='<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>' size={16} stroke={2.4} />
-                Create
               </button>
               <div className="who">
                 <span className="av">M</span>
@@ -300,11 +312,11 @@ export default function AdminApp() {
           {view === "dashboard"   && renderDashboard()}
           {view === "analytics"   && renderAnalytics()}
           {view === "website"     && <WebsiteContentManager token={cmsToken} notify={toast} />}
+          {view === "marquee"     && <MarqueeManager token={cmsToken} notify={toast} />}
           {view === "navigation"  && renderNavigation()}
           {view === "leads"      && renderLeads()}
           {view === "blogs"      && <BlogCmsManager token={cmsToken} notify={toast} />}
-          {view === "tutorials"  && renderTutorials()}
-          {view === "media"      && <MediaCmsManager token={cmsToken} notify={toast} />}
+          {view === "tutorials"  && <TutorialCmsManager notify={toast} />}
           {view === "newsletter" && renderNewsletter()}
           {view === "settings"   && renderSettings()}
         </div>
@@ -404,10 +416,9 @@ export default function AdminApp() {
       { label: "Total Leads", value: stats.totalLeads || 0, icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>' },
       { label: "Subscribers", value: stats.subscribers || 0, icon: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>' },
     ];
-    const totalLeads = stats.totalLeads || 1;
     const QUICK = [
       { label: "Create Post", sub: "Write a new blog post", icon: '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/>', onClick: () => setView("blogs") },
-      { label: "Upload Media", sub: "Add images or files", icon: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>', onClick: () => setView("media") },
+      { label: "Website Content", sub: "Edit homepage sections", icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/>', onClick: () => setView("website") },
       { label: "Newsletter", sub: "Manage subscribers", icon: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>', onClick: () => setView("newsletter") },
       { label: "Add Tutorial", sub: "Step-by-step guide", icon: '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>', onClick: () => setView("tutorials") },
     ];
@@ -415,41 +426,7 @@ export default function AdminApp() {
       <div className="bento">
         {KPIS.map((k) => <KpiCard key={k.label} {...k} />)}
 
-        <div className="dpanel b-2">
-          <div className="dpanel-h"><h3>Hire Me Pipeline</h3><span className="live">Live</span></div>
-          <div className="kanban">
-            {stats.pipeline.map((p) => (
-              <div className="kstage" key={p.status}>
-                <div className="kn">{p.count}</div>
-                <div className="kl">{p.status}</div>
-                <div className="kbar"><i style={{ width: `${(p.count / totalLeads) * 100}%`, background: PIPE_COLORS[p.status] }} /></div>
-              </div>
-            ))}
-          </div>
-          <div style={{ marginTop: 16 }}>
-            <button className="adm-create" style={{ width: "100%", justifyContent: "center" }} onClick={() => setView("leads")}>
-              Open CRM →
-            </button>
-          </div>
-        </div>
-
-        <div className="dpanel b-2">
-          <div className="dpanel-h"><h3>Recent Activity</h3></div>
-          {stats.recentLeads.length === 0
-            ? <p style={{ color: "var(--ad-muted)", fontSize: ".88rem" }}>No recent activity.</p>
-            : stats.recentLeads.map((lead) => (
-              <div className="tl-item" key={lead.id}>
-                <span className="tl-ic">
-                  <Icon path='<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>' size={16} stroke={1.8} />
-                </span>
-                <div><h5>New Hire Me request</h5><p>{lead.name} · {lead.service}</p></div>
-                <span className="tl-time">{lead.date}</span>
-              </div>
-            ))
-          }
-        </div>
-
-        <div className="dpanel b-2">
+        <div className="dpanel b-4">
           <div className="dpanel-h"><h3>Quick Actions</h3></div>
           <div className="qact">
             {QUICK.map((q) => (
@@ -525,32 +502,6 @@ export default function AdminApp() {
     );
   }
 
-  function renderTutorials() {
-    return (
-      <div className="panel">
-        <h3>Tutorials</h3>
-        {tutorials.length === 0
-          ? <p style={{ color: "var(--muted)", fontSize: ".9rem" }}>No tutorials yet.</p>
-          : (
-            <table>
-              <thead><tr><th>Title</th><th>Domain</th><th>Difficulty</th><th>Status</th><th>Views</th></tr></thead>
-              <tbody>
-                {tutorials.map((t) => (
-                  <tr key={t.id}>
-                    <td><strong>{t.title}</strong></td>
-                    <td>{t.domain}</td>
-                    <td>{t.difficulty}</td>
-                    <td>{pill(t.status)}</td>
-                    <td>{t.views}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )
-        }
-      </div>
-    );
-  }
 
   function renderNewsletter() {
     return (
@@ -626,7 +577,23 @@ export default function AdminApp() {
         <input value={settings.tagline} onChange={(e) => setSettings({ ...settings, tagline: e.target.value })} style={{ margin: ".3rem 0 .9rem" }} />
         <label style={{ fontSize: ".8rem", fontWeight: 600, color: "var(--ink)" }}>Contact email</label>
         <input value={settings.email} onChange={(e) => setSettings({ ...settings, email: e.target.value })} style={{ margin: ".3rem 0 1rem" }} />
-        <button className="btn btn-primary" onClick={saveSettings}>Save changes</button>
+
+        <div className="nav-row" style={{ borderTop: "1px solid var(--ad-line)", borderBottom: "none", marginTop: 4, paddingTop: 16 }}>
+          <div className="nav-row-info">
+            <div>
+              <span className="nav-row-label">&quot;Hire Me&quot; button</span>
+              <span className="nav-row-href" style={{ marginLeft: 0, display: "block", marginTop: 2 }}>
+                Shows the Hire Me CTA in the website header
+              </span>
+            </div>
+          </div>
+          <label className="toggle" title={settings.hireMe !== false ? "Hide from header" : "Show in header"}>
+            <input type="checkbox" checked={settings.hireMe !== false} onChange={(e) => setSettings({ ...settings, hireMe: e.target.checked })} />
+            <span className="toggle-track" /><span className="toggle-thumb" />
+          </label>
+        </div>
+
+        <button className="btn btn-primary" style={{ marginTop: 18 }} onClick={saveSettings}>Save changes</button>
       </div>
     );
   }

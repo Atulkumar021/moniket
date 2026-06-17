@@ -3,12 +3,12 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import RevealInit from "@/components/RevealInit";
 import ArticleList from "@/components/ArticleList";
-import { getPublishedArticles, toCard } from "@/lib/queries";
+import { fetchPublishedBlogCards } from "@/lib/server/blog";
 
 export const dynamic = "force-dynamic";
 
-export default function BlogPage() {
-  const items = getPublishedArticles("blog").map(toCard);
+export default async function BlogPage() {
+  const items = await fetchPublishedBlogCards();
   return (
     <>
       <SiteHeader />

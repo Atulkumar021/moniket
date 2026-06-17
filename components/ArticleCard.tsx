@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ArticleCardData } from "@/lib/queries";
 
 export default function ArticleCard({ a }: { a: ArticleCardData }) {
-  const href = `/${a.type === "blog" ? "blog" : "tutorials"}/${a.id}`;
+  const href = a.type === "blog" ? `/blog/${a.slug ?? a.id}` : `/tutorials/${a.id}`;
   return (
     <Link className="post reveal" href={href}>
       <div className="top">

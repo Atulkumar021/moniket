@@ -7,7 +7,7 @@ import { TOOLS, TOOL_CATS, CAT_META, TOOL_LOGOS } from "@/lib/data/static";
 import type { Tool } from "@/lib/types";
 
 const INITIAL = 16;
-const FALLBACK = { label: "Other", color: "#2E90FA", tint: "#EAF4FF", icon: '<circle cx="12" cy="12" r="9"/>' };
+const FALLBACK = { label: "Other", color: "#E0792B", tint: "#FDEEDD", icon: '<circle cx="12" cy="12" r="9"/>' };
 const meta = (cat: string) => CAT_META[cat] ?? FALLBACK;
 
 function ToolLogo({ name, icon, color }: { name: string; icon: string; color: string }) {

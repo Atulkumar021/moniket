@@ -65,8 +65,8 @@ export default function TracksSection({ knowledge, tracks, preview = false }: Pr
               <svg className="kh-infinity" width="180" height="100" viewBox="0 0 170 96" fill="none">
                 <defs>
                   <linearGradient id="ig" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0" stopColor="#7FCBFB" />
-                    <stop offset="1" stopColor="#2E90FA" />
+                    <stop offset="0" stopColor="#F6C892" />
+                    <stop offset="1" stopColor="#E0792B" />
                   </linearGradient>
                 </defs>
                 <path

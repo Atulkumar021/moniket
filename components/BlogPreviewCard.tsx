@@ -22,7 +22,7 @@ const META_CAL = '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 
 
 export default function BlogPreviewCard({ a }: { a: ArticleCardData }) {
   const icon = DOMAIN_ICON[a.domain] ?? FALLBACK;
-  const href = `/${a.type === "blog" ? "blog" : "tutorials"}/${a.id}`;
+  const href = a.type === "blog" ? `/blog/${a.slug ?? a.id}` : `/tutorials/${a.id}`;
   return (
     <Link className="blog-card reveal" href={href}>
       <div className="blog-hero">

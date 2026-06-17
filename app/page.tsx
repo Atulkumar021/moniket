@@ -23,7 +23,7 @@ export default async function HomePage() {
       <SiteHeader />
 
       <Hero hero={hero} />
-      <Marquee items={marquee} />
+      {marquee.length > 0 && <Marquee items={marquee} />}
 
       {/* SERVICES — preview */}
       <ServicesSection serviceSection={serviceSection} serviceCards={serviceCards} preview />
@@ -73,7 +73,7 @@ export default async function HomePage() {
           </div>
           <div className="blog-grid">
             {blogs.map((a) => (
-              <BlogPreviewCard key={a.id} a={a} />
+              <BlogPreviewCard key={a.slug ?? a.id} a={a} />
             ))}
           </div>
           <div className="blog-cta">

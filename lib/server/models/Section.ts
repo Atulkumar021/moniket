@@ -3,6 +3,7 @@ import mongoose, { Schema, type Model } from "mongoose";
 // Section types the page builder understands.
 export const SECTION_TYPES = [
   "hero",
+  "marquee",
   "services",
   "knowledgeHub",
   "toolbox",

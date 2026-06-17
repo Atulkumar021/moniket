@@ -62,6 +62,24 @@ export async function fetchPublicSections(page = "home"): Promise<CmsSection[]> 
   }
 }
 
+// Marquee section, including its disabled state, so the homepage can tell
+// "no marquee configured (use default)" apart from "configured but hidden".
+// Returns null when no marquee section exists in the database.
+export async function fetchMarquee(
+  page = "home"
+): Promise<{ enabled: boolean; items: string[] } | null> {
+  try {
+    await connectToDatabase();
+    const doc = await Section.findOne({ page, type: "marquee" }).lean();
+    if (!doc) return null;
+    const raw = (doc.data as Record<string, unknown>)?.items;
+    const items = Array.isArray(raw) ? raw.map((i) => String(i)).filter(Boolean) : [];
+    return { enabled: doc.enabled !== false, items };
+  } catch {
+    return null;
+  }
+}
+
 // Nav items for a key (main | footer) — mirrors GET /api/nav/:key.
 export async function fetchNavItems(key: "main" | "footer"): Promise<CmsNavItem[]> {
   try {

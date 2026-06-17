@@ -1,7 +1,8 @@
 // Resolves CMS sections (with static fallbacks) into ready-to-render view models
 // shared by the homepage and the dedicated section pages.
-import { getCmsSections, sectionData } from "@/lib/cms";
+import { getCmsSections, getMarquee, sectionData } from "@/lib/cms";
 import { getPublishedArticles, toCard } from "@/lib/queries";
+import { fetchPublishedBlogCards } from "@/lib/server/blog";
 import { MARQUEE_TECH } from "@/lib/data/static";
 import { SERVICE_CARDS, TRACKS, PROCESS, STAT_ICONS } from "@/lib/data/home";
 import type { Tool } from "@/lib/types";
@@ -79,9 +80,19 @@ export async function getSiteContent() {
       }))
     : undefined;
 
-  const blogs = getPublishedArticles("blog").slice(0, 3).map(toCard);
+  const blogs = await fetchPublishedBlogCards(3);
   const tutorials = getPublishedArticles("tutorial").slice(0, 3).map(toCard);
-  const marquee = [...MARQUEE_TECH, ...MARQUEE_TECH];
+
+  // Marquee: CMS-managed when a section exists; falls back to the static list
+  // when none is configured. A configured-but-disabled section hides the strip.
+  const marqueeDoc = await getMarquee("home");
+  const marqueeItems = marqueeDoc
+    ? marqueeDoc.enabled
+      ? marqueeDoc.items
+      : []
+    : MARQUEE_TECH;
+  // Duplicated for a seamless scroll loop (matches the original behaviour).
+  const marquee = marqueeItems.length ? [...marqueeItems, ...marqueeItems] : [];
 
   return {
     hero,

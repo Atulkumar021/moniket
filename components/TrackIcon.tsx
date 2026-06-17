@@ -35,7 +35,7 @@ export default function TrackIcon({ name, size = 40 }: Props) {
           <defs>
             <linearGradient id="ic-dv" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stopColor="#8FD0FB" />
-              <stop offset="1" stopColor="#2E90FA" />
+              <stop offset="1" stopColor="#E0792B" />
             </linearGradient>
           </defs>
           <line x1="15" y1="15" x2="33" y2="24" stroke="#BCDCFA" strokeWidth="3.2" strokeLinecap="round" />
@@ -89,7 +89,7 @@ export default function TrackIcon({ name, size = 40 }: Props) {
           <defs>
             <linearGradient id="ic-cl" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0" stopColor="#CDEBFF" />
-              <stop offset="1" stopColor="#5CC1F5" />
+              <stop offset="1" stopColor="#F2A65E" />
             </linearGradient>
           </defs>
           <path d="M34 32H15a8.5 8.5 0 0 1-1-16.94A10.5 10.5 0 0 1 34 17a7.5 7.5 0 0 1 0 15z" fill="url(#ic-cl)" />
@@ -103,7 +103,7 @@ export default function TrackIcon({ name, size = 40 }: Props) {
           <defs>
             <linearGradient id="ic-dk" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0" stopColor="#5BB4F5" />
-              <stop offset="1" stopColor="#2E90FA" />
+              <stop offset="1" stopColor="#E0792B" />
             </linearGradient>
           </defs>
           <g fill="url(#ic-dk)">
@@ -141,7 +141,7 @@ export default function TrackIcon({ name, size = 40 }: Props) {
           <defs>
             <linearGradient id="ic-st" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0" stopColor="#8FD0FB" />
-              <stop offset="1" stopColor="#2E90FA" />
+              <stop offset="1" stopColor="#E0792B" />
             </linearGradient>
           </defs>
           <path d="M11 22v7c0 2.6 5.8 4.6 13 4.6s13-2 13-4.6v-7z" fill="url(#ic-st)" opacity="0.85" />
@@ -186,7 +186,7 @@ export default function TrackIcon({ name, size = 40 }: Props) {
     default:
       return (
         <svg {...common}>
-          <circle cx="24" cy="24" r="14" fill="#5CC1F5" />
+          <circle cx="24" cy="24" r="14" fill="#F2A65E" />
         </svg>
       );
   }

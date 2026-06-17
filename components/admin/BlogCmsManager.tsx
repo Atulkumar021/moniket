@@ -85,18 +85,44 @@ export default function BlogCmsManager({ token, notify }: { token: string; notif
     notify("Blog post deleted");
   }
 
+  // Enable/disable a post. Disabled (draft) posts are hidden from the website.
+  async function toggleVisible(post: Post) {
+    const next = post.status === "published" ? "draft" : "published";
+    setPosts((list) => list.map((p) => (p._id === post._id ? { ...p, status: next } : p)));
+    try {
+      await request(`/blog/${post._id}/toggle`, { method: "POST" });
+      notify(next === "published" ? "Blog post is now visible on the website" : "Blog post hidden from the website");
+    } catch {
+      await load();
+    }
+  }
+
   return (
     <>
       <div className="panel">
         <h3>Blog posts <button className="btn btn-primary btn-sm" onClick={() => open()}>+ New post</button></h3>
         {error && <div className="cms-error">{error}</div>}
         <table>
-          <thead><tr><th>Title</th><th>Domain</th><th>Status</th><th>Views</th><th>Actions</th></tr></thead>
+          <thead><tr><th>Title</th><th>Domain</th><th>Visible</th><th>Views</th><th>Actions</th></tr></thead>
           <tbody>{posts.map((post) => (
             <tr key={post._id}>
               <td><strong>{post.title}</strong><br /><small>{post.slug}</small></td>
-              <td>{post.domain}</td><td><span className={`pill ${post.status}`}>{post.status}</span></td><td>{post.views}</td>
-              <td className="act"><button className="btn btn-soft btn-sm" onClick={() => open(post)}>Edit</button><button className="icon-btn del" onClick={() => remove(post)}>×</button></td>
+              <td>{post.domain}</td>
+              <td>
+                <div className="tut-vis">
+                  <label className="toggle" title={post.status === "published" ? "Hide from website" : "Show on website"}>
+                    <input type="checkbox" checked={post.status === "published"} onChange={() => toggleVisible(post)} />
+                    <span className="toggle-track" /><span className="toggle-thumb" />
+                  </label>
+                  <span data-on={post.status === "published"}>{post.status === "published" ? "Live" : "Hidden"}</span>
+                </div>
+              </td>
+              <td>{post.views}</td>
+              <td className="act">
+                <a className="btn btn-soft btn-sm" href={`/blog/${post.slug}`} target="_blank" rel="noreferrer">View</a>
+                <button className="btn btn-soft btn-sm" onClick={() => open(post)}>Edit</button>
+                <button className="icon-btn del" onClick={() => remove(post)}>×</button>
+              </td>
             </tr>
           ))}</tbody>
         </table>

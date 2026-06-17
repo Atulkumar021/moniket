@@ -18,8 +18,9 @@ export function getDomainCount(domain: string): number {
   return getPublishedArticles().filter((a) => a.domain === domain).length;
 }
 
-/** Lightweight article (no body) for list/card rendering. */
-export type ArticleCardData = Omit<Article, "body">;
+/** Lightweight article (no body) for list/card rendering.
+ *  `slug` is set for MongoDB-backed blog posts, which link by slug instead of id. */
+export type ArticleCardData = Omit<Article, "body"> & { slug?: string };
 export function toCard(a: Article): ArticleCardData {
   const { body: _body, ...rest } = a;
   void _body;

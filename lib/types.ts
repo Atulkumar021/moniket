@@ -63,6 +63,8 @@ export interface Settings {
   siteTitle: string;
   tagline: string;
   email: string;
+  /** Show the "Hire Me" CTA button in the site header. Defaults to true. */
+  hireMe?: boolean;
 }
 
 export interface Analytics {

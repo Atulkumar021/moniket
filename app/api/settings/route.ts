@@ -13,6 +13,7 @@ export async function PUT(req: Request) {
     if (typeof b.siteTitle === "string") s.settings.siteTitle = b.siteTitle;
     if (typeof b.tagline === "string") s.settings.tagline = b.tagline;
     if (typeof b.email === "string") s.settings.email = b.email;
+    if (typeof b.hireMe === "boolean") s.settings.hireMe = b.hireMe;
     return s.settings;
   });
   return NextResponse.json(result);

@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { getCmsNav } from "@/lib/cms";
+import { getSettings } from "@/lib/queries";
 import LogoSvg from "@/components/LogoSvg";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export default async function SiteHeader() {
   const cmsItems = await getCmsNav("main");
+  const showHireMe = getSettings().hireMe !== false; // defaults to visible
   const items = cmsItems.length ? cmsItems : [
     { label: "Services", href: "/services", order: 0 },
     { label: "Learn", href: "/tracks", order: 1 },
@@ -28,7 +30,7 @@ export default async function SiteHeader() {
           </div>
           <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
             <ThemeToggle />
-            <Link className="btn btn-primary btn-sm" href="/contact">Hire Me</Link>
+            {showHireMe && <Link className="btn btn-primary btn-sm" href="/contact">Hire Me</Link>}
           </div>
         </nav>
       </div>
