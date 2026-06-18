@@ -86,7 +86,7 @@ export async function fetchNavItems(key: "main" | "footer"): Promise<CmsNavItem[
   try {
     await connectToDatabase();
     const menu = await NavMenu.findOne({ key }).lean();
-    const items = ((menu?.items as CmsNavItem[]) || []).filter((i) => i.enabled !== false);
+    const items = ((menu?.items as unknown as CmsNavItem[]) || []).filter((i) => i.enabled !== false);
     return items.sort((a, b) => a.order - b.order).map((i) => ({
       ...i,
       href: normalizeHref(i.href),
