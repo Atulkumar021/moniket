@@ -35,7 +35,8 @@ const DEFAULT_NAV: CmsNavItem[] = [
 export default async function SiteHeader() {
   const cmsItems = await getCmsNav("main");
   const showHireMe = getSettings().hireMe !== false;
-  const items = cmsItems.length ? cmsItems : DEFAULT_NAV;
+  const hasDropdowns = cmsItems.some((i) => i.children && i.children.length > 0);
+  const items = hasDropdowns ? cmsItems : DEFAULT_NAV;
   return (
     <header>
       <div className="wrap">
