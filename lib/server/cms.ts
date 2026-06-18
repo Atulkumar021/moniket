@@ -19,6 +19,7 @@ export type CmsNavItem = {
   href: string;
   order: number;
   enabled?: boolean;
+  children?: CmsNavItem[];
 };
 
 // Legacy homepage anchors → their dedicated pages. Keeps the site working even
@@ -86,7 +87,16 @@ export async function fetchNavItems(key: "main" | "footer"): Promise<CmsNavItem[
     await connectToDatabase();
     const menu = await NavMenu.findOne({ key }).lean();
     const items = ((menu?.items as CmsNavItem[]) || []).filter((i) => i.enabled !== false);
-    return items.sort((a, b) => a.order - b.order).map((i) => ({ ...i, href: normalizeHref(i.href) }));
+    return items.sort((a, b) => a.order - b.order).map((i) => ({
+      ...i,
+      href: normalizeHref(i.href),
+      children: Array.isArray((i as unknown as { children?: CmsNavItem[] }).children)
+        ? ((i as unknown as { children?: CmsNavItem[] }).children || [])
+            .filter((c) => c.enabled !== false)
+            .sort((a, b) => a.order - b.order)
+            .map((c) => ({ ...c, href: normalizeHref(c.href) }))
+        : undefined,
+    }));
   } catch {
     return [];
   }
