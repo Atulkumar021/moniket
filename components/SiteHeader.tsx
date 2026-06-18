@@ -2,20 +2,40 @@ import Link from "next/link";
 import { getCmsNav } from "@/lib/cms";
 import { getSettings } from "@/lib/queries";
 import LogoSvg from "@/components/LogoSvg";
-import ThemeToggle from "@/components/ThemeToggle";
+import NavBar from "@/components/NavBar";
+import type { CmsNavItem } from "@/lib/cms";
+
+const DEFAULT_NAV: CmsNavItem[] = [
+  {
+    label: "Services", href: "/solutions/", order: 0,
+    children: [
+      { label: "All Solutions", href: "/solutions/", order: 0 },
+      { label: "Cloud Infrastructure", href: "/solutions/cloud-infrastructure/", order: 1 },
+      { label: "DevOps Automation", href: "/solutions/devops-automation/", order: 2 },
+      { label: "Security", href: "/solutions/security/", order: 3 },
+      { label: "Networking", href: "/solutions/networking/", order: 4 },
+      { label: "Monitoring & Observability", href: "/solutions/monitoring-observability/", order: 5 },
+    ],
+  },
+  {
+    label: "Resources", href: "/resources/", order: 1,
+    children: [
+      { label: "All Resources", href: "/resources/", order: 0 },
+      { label: "Blog", href: "/blog/", order: 1 },
+      { label: "Tutorials", href: "/tutorials/", order: 2 },
+      { label: "Case Studies", href: "/resources/case-studies/", order: 3 },
+      { label: "Documentation", href: "/resources/documentation/", order: 4 },
+      { label: "Open-Source", href: "/toolbox/", order: 5 },
+    ],
+  },
+  { label: "About", href: "/about/", order: 2 },
+  { label: "Contact", href: "/contact/", order: 3 },
+];
 
 export default async function SiteHeader() {
   const cmsItems = await getCmsNav("main");
-  const showHireMe = getSettings().hireMe !== false; // defaults to visible
-  const items = cmsItems.length ? cmsItems : [
-    { label: "Services", href: "/services", order: 0 },
-    { label: "Learn", href: "/tracks", order: 1 },
-    { label: "Open-Source", href: "/toolbox", order: 2 },
-    { label: "Blog", href: "/blog", order: 3 },
-    { label: "Tutorials", href: "/tutorials", order: 4 },
-    { label: "About", href: "/about", order: 5 },
-    { label: "Contact", href: "/contact", order: 6 },
-  ];
+  const showHireMe = getSettings().hireMe !== false;
+  const items = cmsItems.length ? cmsItems : DEFAULT_NAV;
   return (
     <header>
       <div className="wrap">
@@ -23,15 +43,7 @@ export default async function SiteHeader() {
           <Link className="brand-logo" href="/" aria-label="Moniket Technologies — Home">
             <LogoSvg className="site-logo" />
           </Link>
-          <div className="navlinks">
-            {items.map((item) => (
-              <Link href={item.href} key={`${item.label}-${item.href}`}>{item.label}</Link>
-            ))}
-          </div>
-          <div style={{ display: "flex", gap: ".5rem", alignItems: "center" }}>
-            <ThemeToggle />
-            {showHireMe && <Link className="btn btn-primary btn-sm" href="/contact">Hire Me</Link>}
-          </div>
+          <NavBar items={items} showHireMe={showHireMe} />
         </nav>
       </div>
     </header>

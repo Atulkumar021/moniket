@@ -7,6 +7,7 @@ import WebsiteContentManager from "@/components/admin/WebsiteContentManager";
 import MarqueeManager from "@/components/admin/MarqueeManager";
 import BlogCmsManager from "@/components/admin/BlogCmsManager";
 import TutorialCmsManager from "@/components/admin/TutorialCmsManager";
+import PageContentManager from "@/components/admin/PageContentManager";
 import type { Lead, Settings, Sub } from "@/lib/types";
 
 type Stats = {
@@ -23,7 +24,7 @@ type Stats = {
 
 type ViewId =
   | "dashboard" | "analytics" | "website" | "marquee" | "navigation" | "blogs" | "tutorials"
-  | "leads" | "newsletter" | "settings";
+  | "leads" | "newsletter" | "settings" | "solutions" | "resources";
 
 type NavItem = { label: string; href: string; order: number; enabled: boolean };
 
@@ -38,6 +39,8 @@ const MENU: [string, [ViewId, string, string][]][] = [
     ["navigation", "Navigation", '<path d="M3 12h18M3 6h18M3 18h18"/>'],
     ["blogs", "Blog Posts", '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'],
     ["tutorials", "Tutorials", '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>'],
+    ["solutions", "Solutions Pages", '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>'],
+    ["resources", "Resources Pages", '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'],
   ]],
   ["CRM", [
     ["leads", "Hire Me", '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'],
@@ -52,6 +55,7 @@ const TITLES: Record<ViewId, string> = {
   dashboard: "Dashboard", analytics: "Analytics", website: "Website Content", marquee: "Marquee",
   navigation: "Navigation", blogs: "Blog Posts", tutorials: "Tutorials",
   leads: "Hire Me", newsletter: "Newsletter", settings: "Settings",
+  solutions: "Solutions Pages", resources: "Resources Pages",
 };
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -316,6 +320,8 @@ export default function AdminApp() {
           {view === "leads"      && renderLeads()}
           {view === "blogs"      && <BlogCmsManager token={cmsToken} notify={toast} />}
           {view === "tutorials"  && <TutorialCmsManager notify={toast} />}
+          {view === "solutions"  && <PageContentManager token={cmsToken} notify={toast} group="solutions" />}
+          {view === "resources"  && <PageContentManager token={cmsToken} notify={toast} group="resources" />}
           {view === "newsletter" && renderNewsletter()}
           {view === "settings"   && renderSettings()}
         </div>
