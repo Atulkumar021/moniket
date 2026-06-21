@@ -8,6 +8,13 @@ import MarqueeManager from "@/components/admin/MarqueeManager";
 import BlogCmsManager from "@/components/admin/BlogCmsManager";
 import TutorialCmsManager from "@/components/admin/TutorialCmsManager";
 import PageContentManager from "@/components/admin/PageContentManager";
+import FaqCmsManager from "@/components/admin/FaqCmsManager";
+import StatsCmsManager from "@/components/admin/StatsCmsManager";
+import SkillsCmsManager from "@/components/admin/SkillsCmsManager";
+import ProcessCmsManager from "@/components/admin/ProcessCmsManager";
+import TrustCmsManager from "@/components/admin/TrustCmsManager";
+import ServiceCardsCmsManager from "@/components/admin/ServiceCardsCmsManager";
+import TracksCmsManager from "@/components/admin/TracksCmsManager";
 import type { Lead, Settings, Sub } from "@/lib/types";
 
 type Stats = {
@@ -24,7 +31,8 @@ type Stats = {
 
 type ViewId =
   | "dashboard" | "analytics" | "website" | "marquee" | "navigation" | "blogs" | "tutorials"
-  | "leads" | "newsletter" | "settings" | "solutions" | "resources";
+  | "leads" | "newsletter" | "settings" | "solutions" | "resources"
+  | "sec-faq" | "sec-stats" | "sec-skills" | "sec-process" | "sec-trust" | "sec-service-cards" | "sec-tracks";
 
 type NavItem = { label: string; href: string; order: number; enabled: boolean };
 
@@ -42,6 +50,15 @@ const MENU: [string, [ViewId, string, string][]][] = [
     ["solutions", "Solutions Pages", '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>'],
     ["resources", "Resources Pages", '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'],
   ]],
+  ["SECTIONS", [
+    ["sec-faq", "FAQs", '<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>'],
+    ["sec-stats", "Stats Band", '<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>'],
+    ["sec-skills", "Skills", '<path d="M3 3v18h18"/><polyline points="7 14 11 10 14 13 19 7"/><polyline points="15 7 19 7 19 11"/>'],
+    ["sec-process", "Process Steps", '<path d="M12 5v14M5 12l7-7 7 7"/>'],
+    ["sec-trust", "Trust / Values", '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'],
+    ["sec-service-cards", "Service Cards", '<rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/>'],
+    ["sec-tracks", "Learning Tracks", '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>'],
+  ]],
   ["CRM", [
     ["leads", "Hire Me", '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>'],
     ["newsletter", "Newsletter", '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>'],
@@ -56,6 +73,9 @@ const TITLES: Record<ViewId, string> = {
   navigation: "Navigation", blogs: "Blog Posts", tutorials: "Tutorials",
   leads: "Hire Me", newsletter: "Newsletter", settings: "Settings",
   solutions: "Solutions Pages", resources: "Resources Pages",
+  "sec-faq": "FAQs", "sec-stats": "Stats Band", "sec-skills": "Skills",
+  "sec-process": "Process Steps", "sec-trust": "Trust / Values",
+  "sec-service-cards": "Service Cards", "sec-tracks": "Learning Tracks",
 };
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -312,18 +332,25 @@ export default function AdminApp() {
             </div>
           </div>
 
-          {view === "dashboard"   && renderDashboard()}
-          {view === "analytics"   && renderAnalytics()}
-          {view === "website"     && <WebsiteContentManager token={cmsToken} notify={toast} />}
-          {view === "marquee"     && <MarqueeManager token={cmsToken} notify={toast} />}
-          {view === "navigation"  && renderNavigation()}
-          {view === "leads"      && renderLeads()}
-          {view === "blogs"      && <BlogCmsManager token={cmsToken} notify={toast} />}
-          {view === "tutorials"  && <TutorialCmsManager notify={toast} />}
-          {view === "solutions"  && <PageContentManager token={cmsToken} notify={toast} group="solutions" />}
-          {view === "resources"  && <PageContentManager token={cmsToken} notify={toast} group="resources" />}
-          {view === "newsletter" && renderNewsletter()}
-          {view === "settings"   && renderSettings()}
+          {view === "dashboard"          && renderDashboard()}
+          {view === "analytics"          && renderAnalytics()}
+          {view === "website"            && <WebsiteContentManager token={cmsToken} notify={toast} />}
+          {view === "marquee"            && <MarqueeManager token={cmsToken} notify={toast} />}
+          {view === "navigation"         && renderNavigation()}
+          {view === "leads"              && renderLeads()}
+          {view === "blogs"              && <BlogCmsManager token={cmsToken} notify={toast} />}
+          {view === "tutorials"          && <TutorialCmsManager notify={toast} />}
+          {view === "solutions"          && <PageContentManager token={cmsToken} notify={toast} group="solutions" />}
+          {view === "resources"          && <PageContentManager token={cmsToken} notify={toast} group="resources" />}
+          {view === "newsletter"         && renderNewsletter()}
+          {view === "settings"           && renderSettings()}
+          {view === "sec-faq"            && <FaqCmsManager notify={toast} />}
+          {view === "sec-stats"          && <StatsCmsManager notify={toast} />}
+          {view === "sec-skills"         && <SkillsCmsManager notify={toast} />}
+          {view === "sec-process"        && <ProcessCmsManager notify={toast} />}
+          {view === "sec-trust"          && <TrustCmsManager notify={toast} />}
+          {view === "sec-service-cards"  && <ServiceCardsCmsManager notify={toast} />}
+          {view === "sec-tracks"         && <TracksCmsManager notify={toast} />}
         </div>
       </div>
 

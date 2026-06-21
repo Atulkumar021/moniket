@@ -73,6 +73,14 @@ export interface Analytics {
   topPages: [string, number][];
 }
 
+export interface FaqItem { id: number; question: string; answer: string; order: number; status: "published" | "draft"; }
+export interface SiteStatItem { id: number; value: number; suffix: string; label: string; desc: string; icon: string; order: number; }
+export interface SkillItem { id: number; name: string; level: string; pct: number; icon: string; order: number; }
+export interface ProcessStep { id: number; num: string; title: string; desc: string; icon: string; order: number; }
+export interface TrustItem { id: number; title: string; desc: string; icon: string; order: number; }
+export interface ServiceCard { id: number; title: string; desc: string; icon: string; order: number; }
+export interface TrackItem { id: number; name: string; desc: string; guides: number; hours: number; color: string; tint: string; icon: string; order: number; }
+
 export interface Store {
   uid: number;
   articles: Article[];
@@ -83,6 +91,13 @@ export interface Store {
   media: MediaItem[];
   settings: Settings;
   analytics: Analytics;
+  faqs: FaqItem[];
+  siteStats: SiteStatItem[];
+  skills: SkillItem[];
+  processSteps: ProcessStep[];
+  trustItems: TrustItem[];
+  serviceCards: ServiceCard[];
+  tracks: TrackItem[];
 }
 
 /** Tool tuple: [name, category, license, description] */
