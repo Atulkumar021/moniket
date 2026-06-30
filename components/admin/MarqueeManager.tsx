@@ -91,10 +91,13 @@ export default function MarqueeManager({ token, notify }: { token: string; notif
   return (
     <div className="panel cms-panel">
       <div className="cms-header">
-        <div>
-          <p className="cms-eyebrow">Homepage</p>
-          <h3>Marquee strip</h3>
-          <p>The scrolling technology list shown under the hero. Add, edit, reorder or remove items, and toggle whether it appears on the site.</p>
+        <div className="cms-hdr-left">
+          <div className="cms-hdr-icon"><Icon path='<path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>' size={20} stroke={1.9} /></div>
+          <div>
+            <small className="cms-eyebrow">Homepage</small>
+            <h3>Marquee Strip</h3>
+            <p>The scrolling technology list shown under the hero. Add, reorder or remove items and toggle visibility.</p>
+          </div>
         </div>
         <label className="toggle" title={enabled ? "Hide from website" : "Show on website"}>
           <input type="checkbox" checked={enabled} onChange={() => update(items, !enabled)} />

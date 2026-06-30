@@ -157,11 +157,15 @@ export default function WebsiteContentManager({ token, notify }: { token: string
     <>
       <div className="panel cms-panel">
         <div className="cms-header">
-          <div>
-            <p className="cms-eyebrow">Homepage builder</p>
-            <h3>Website content</h3>
-            <p>Toggle sections on or off to show or hide them on the live homepage, reorder them, or edit their content.</p>
+          <div className="cms-hdr-left">
+            <div className="cms-hdr-icon"><Icon path='<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 9v11"/>' size={20} stroke={1.9} /></div>
+            <div>
+              <small className="cms-eyebrow">Homepage builder</small>
+              <h3>Website Content</h3>
+              <p>Toggle sections on or off, reorder them, or edit their content for the live homepage.</p>
+            </div>
           </div>
+          <button className="btn btn-soft btn-sm" onClick={() => open()}>+ Add section</button>
         </div>
 
         {error && <div className="cms-error">{error}</div>}

@@ -1,4 +1,4 @@
-export type ArticleType = "blog" | "tutorial";
+export type ArticleType = "blog" | "tutorial" | "case-study" | "documentation" | "service";
 export type LeadStatus = "new" | "contacted" | "qualified" | "won" | "lost";
 export type PublishStatus = "published" | "draft";
 
@@ -63,7 +63,6 @@ export interface Settings {
   siteTitle: string;
   tagline: string;
   email: string;
-  /** Show the "Hire Me" CTA button in the site header. Defaults to true. */
   hireMe?: boolean;
 }
 
@@ -71,6 +70,26 @@ export interface Analytics {
   visitors: number[];
   sources: [string, number][];
   topPages: [string, number][];
+}
+
+export interface SolutionItem {
+  id: number;
+  title: string;
+  slug: string;
+  icon: string;
+  excerpt: string;
+  status: "published" | "draft";
+  order: number;
+}
+
+export interface ToolItem {
+  id: number;
+  name: string;
+  category: string;
+  license: string;
+  description: string;
+  link?: string;
+  status: "published" | "draft";
 }
 
 export interface FaqItem { id: number; question: string; answer: string; order: number; status: "published" | "draft"; }
@@ -91,6 +110,8 @@ export interface Store {
   media: MediaItem[];
   settings: Settings;
   analytics: Analytics;
+  tools: ToolItem[];
+  solutions: SolutionItem[];
   faqs: FaqItem[];
   siteStats: SiteStatItem[];
   skills: SkillItem[];

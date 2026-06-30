@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Icon from "@/components/Icon";
 
 type Post = {
   _id: string;
@@ -99,8 +100,18 @@ export default function BlogCmsManager({ token, notify }: { token: string; notif
 
   return (
     <>
-      <div className="panel">
-        <h3>Blog posts <button className="btn btn-primary btn-sm" onClick={() => open()}>+ New post</button></h3>
+      <div className="panel cms-panel">
+        <div className="cms-header">
+          <div className="cms-hdr-left">
+            <div className="cms-hdr-icon"><Icon path='<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>' size={20} stroke={1.9} /></div>
+            <div>
+              <small className="cms-eyebrow">Content</small>
+              <h3>Blog Posts</h3>
+              <p>Create, edit and publish blog articles shown on the website.</p>
+            </div>
+          </div>
+          <button className="btn btn-primary btn-sm" onClick={() => open()}>+ New post</button>
+        </div>
         {error && <div className="cms-error">{error}</div>}
         <table>
           <thead><tr><th>Title</th><th>Domain</th><th>Visible</th><th>Views</th><th>Actions</th></tr></thead>

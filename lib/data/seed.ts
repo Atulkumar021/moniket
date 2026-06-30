@@ -46,6 +46,14 @@ export function seedStore(): Store {
       sources: [["Google / Search", 48], ["Direct", 24], ["GitHub", 14], ["LinkedIn", 10], ["Other", 4]],
       topPages: [["/ (Home)", 2410], ["/blog/gitlab-cicd", 1480], ["/tutorials/wireguard-vpn", 1340], ["/toolbox", 1120], ["/tutorials/nginx-ssl", 980]],
     },
+    tools: [],
+    solutions: [
+      { id: 1, title: "Cloud Infrastructure", slug: "cloud-infrastructure", icon: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>', excerpt: "Design, deploy and optimize multi-cloud environments on AWS, GCP and Azure.", status: "published", order: 0 },
+      { id: 2, title: "DevOps Automation", slug: "devops-automation", icon: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>', excerpt: "CI/CD pipelines, container orchestration and infrastructure-as-code at scale.", status: "published", order: 1 },
+      { id: 3, title: "Security & SecOps", slug: "security", icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', excerpt: "End-to-end security hardening, threat monitoring and compliance automation.", status: "published", order: 2 },
+      { id: 4, title: "Networking", slug: "networking", icon: '<rect x="2" y="2" width="6" height="6" rx="1"/><rect x="16" y="2" width="6" height="6" rx="1"/><rect x="9" y="16" width="6" height="6" rx="1"/><path d="M5 8v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><line x1="12" y1="14" x2="12" y2="16"/>', excerpt: "Network architecture, routing, firewalls and software-defined networking.", status: "published", order: 3 },
+      { id: 5, title: "Monitoring & Observability", slug: "monitoring-observability", icon: '<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>', excerpt: "Full-stack observability with metrics, logs, traces and intelligent alerting.", status: "published", order: 4 },
+    ],
     faqs: [
       { id: 1, question: "Which domains do you cover?", answer: "Infrastructure, platform, DevOps, SecOps, networking, cloud, containers, virtualization, storage and monitoring — all with open-source tools.", order: 1, status: "published" },
       { id: 2, question: "Do you only use open-source tools?", answer: "Mostly — they give you control and no licence bills. If a paid tool is genuinely best, I will say so honestly.", order: 2, status: "published" },

@@ -8,13 +8,13 @@ export const metadata: Metadata = { title: "Resources — Moniket Technologies" 
 
 const RESOURCES = [
   {
-    href: "/blog/",
+    href: "/resources/blog/",
     icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
     title: "Blog",
     desc: "In-depth write-ups on infrastructure, DevOps, security and open-source tooling.",
   },
   {
-    href: "/tutorials/",
+    href: "/resources/tutorials/",
     icon: '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
     title: "Tutorials",
     desc: "Step-by-step, copy-paste-ready guides you can follow along and adapt.",
@@ -32,7 +32,7 @@ const RESOURCES = [
     desc: "Reference docs, configuration templates and best-practice guides.",
   },
   {
-    href: "/toolbox/",
+    href: "/resources/open-source/",
     icon: '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>',
     title: "Open-Source",
     desc: "70+ curated open-source tools across every infrastructure domain.",

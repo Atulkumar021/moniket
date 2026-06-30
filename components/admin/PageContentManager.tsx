@@ -166,22 +166,25 @@ export default function PageContentManager({
     <>
       <div className="panel cms-panel">
         <div className="cms-header">
-          <div>
-            <p className="cms-eyebrow">{groupTitle} page builder</p>
-            <h3>{groupTitle} pages</h3>
-            <p>Select a page below, then manage its content sections.</p>
+          <div className="cms-hdr-left">
+            <div className="cms-hdr-icon">
+              <Icon path={group === "solutions"
+                ? '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>'
+                : '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'}
+                size={20} stroke={1.9} />
+            </div>
+            <div>
+              <small className="cms-eyebrow">{groupTitle} page builder</small>
+              <h3>{groupTitle} Pages</h3>
+              <p>Select a page, then manage its content sections.</p>
+            </div>
           </div>
+          <button className="btn btn-soft btn-sm" onClick={() => open()}>+ Add section</button>
         </div>
 
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ fontSize: ".8rem", fontWeight: 600, color: "var(--ad-ink, var(--ink))", display: "block", marginBottom: 6 }}>
-            Page
-          </label>
-          <select
-            value={selectedPage}
-            onChange={(e) => setSelectedPage(e.target.value)}
-            style={{ minWidth: 280 }}
-          >
+        <div className="adm-field">
+          <label className="adm-label">Page</label>
+          <select value={selectedPage} onChange={(e) => setSelectedPage(e.target.value)} style={{ minWidth: 280 }}>
             {pages.map((p) => (
               <option key={p.value} value={p.value}>{p.label}</option>
             ))}
@@ -235,11 +238,6 @@ export default function PageContentManager({
           ))}
         </div>
 
-        <div style={{ marginTop: 16 }}>
-          <button className="btn btn-soft btn-sm" onClick={() => open()}>
-            + Add section
-          </button>
-        </div>
       </div>
 
       {editing && (
